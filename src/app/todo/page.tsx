@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { loadTasks, saveTasks, generateTaskId } from "../functions";
+import { loadTasks, addTaskToDb, updateTaskDb, deleteTaskDb, generateTaskId } from "../functions";
 
 interface Task {
-  $id?: string;
+  $id: string;
   title: string;
   content: string;
   completed: boolean;
@@ -19,13 +19,13 @@ export default function Home() {
 
   // Load tasks when the component mounts
   useEffect(() => {
-    setTasks(loadTasks());
+    loadTasks().then(setTasks);
   }, []);
 
   // Save tasks whenever they change
-  useEffect(() => {
-    saveTasks(tasks);
-  }, [tasks]);
+  // useEffect(() => {
+  //   saveTasks(tasks);
+  // }, [tasks]);
 
   const addTask = (): void => {
     if (title.trim() === "" || content.trim() === "") return;
@@ -35,6 +35,8 @@ export default function Home() {
       content,
       completed: false,
     };
+    addTaskToDb(newTask)
+
     setTasks([...tasks, newTask]);
     setTitle("");
     setContent("");
@@ -47,14 +49,37 @@ export default function Home() {
     setTasks(updatedTasks);
   };
 
-  const deleteTask = (index: number): void => {
+  const deleteTask = async (index: number): Promise<void> => {
+    const taskToDelete = tasks[index];
+    console.log(`Attempting to delete task ID: ${taskToDelete.$id}`)
+    if (taskToDelete.$id) {
+      try {
+        await deleteTaskDb(taskToDelete);
+      } catch (error) {
+        console.error("Failed to delete task: "+error);
+        return;
+      }
+    }
     const updatedTasks = tasks.filter((_, i) => i !== index);
     setTasks(updatedTasks);
   };
 
   const saveTask = (index: number): void => {
-    const updatedTasks = tasks.map((t, i) =>
-      i === index ? { ...t, title: editingTitle, content: editingContent } : t
+    const updatedTasks = tasks.map((t, i) => {
+      if(i === index){ 
+        let updTask: Task = {
+          $id: t.$id,
+          title: editingTitle,
+          content: editingContent,
+          completed: t.completed
+        }
+        updateTaskDb(updTask);
+        return { ...t, title: editingTitle, content: editingContent } 
+      }
+      else{ 
+        return t;
+      }
+    }
     );
     setTasks(updatedTasks);
     setEditingIndex(null);
