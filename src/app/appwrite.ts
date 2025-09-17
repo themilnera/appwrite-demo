@@ -1,4 +1,4 @@
-import { Client, ID, TablesDB} from "appwrite";
+import { Client, TablesDB} from "appwrite";
 
 const projectId : string = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!;
 const endpoint : string = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!;

@@ -1,5 +1,5 @@
-import { Client, ID, TablesDB } from "appwrite";
-import { databaseId, tableId, client, tablesDB } from "./appwrite";
+import { ID } from "appwrite";
+import { databaseId, tableId, tablesDB } from "./appwrite";
 
 interface Task {
   $id: string;
@@ -27,8 +27,7 @@ export const loadTasks = async (): Promise<Task[]> => {
 };
 
 export const addTaskToDb = async(task: Task): Promise<void> =>{
-  let result = ""; 
-  const promise = await tablesDB.createRow({
+  await tablesDB.createRow({
     databaseId: databaseId,
     tableId: tableId,
     rowId: ID.unique(),
@@ -48,7 +47,7 @@ export const addTaskToDb = async(task: Task): Promise<void> =>{
 //updateTaskDb
 export const updateTaskDb = async(task: Task): Promise<void> =>{
   console.log(`Attempting to update task. ID: ${task.$id}`)
-  const promise = await tablesDB.updateRow({
+  await tablesDB.updateRow({
     databaseId: databaseId,
     tableId: tableId,
     rowId: task.$id,

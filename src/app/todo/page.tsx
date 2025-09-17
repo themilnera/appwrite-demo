@@ -67,7 +67,7 @@ export default function Home() {
   const saveTask = (index: number): void => {
     const updatedTasks = tasks.map((t, i) => {
       if(i === index){ 
-        let updTask: Task = {
+        const updTask: Task = {
           $id: t.$id,
           title: editingTitle,
           content: editingContent,
