@@ -27,10 +27,10 @@ export const loadTasks = async (): Promise<Task[]> => {
 };
 
 export const addTaskToDb = async(task: Task): Promise<void> =>{
-  await tablesDB.createRow({
+  return await tablesDB.createRow({
     databaseId: databaseId,
     tableId: tableId,
-    rowId: ID.unique(),
+    rowId: task.$id,
     data: {
       title: task.title,
       content: task.content,

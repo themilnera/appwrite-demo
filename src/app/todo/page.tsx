@@ -26,20 +26,25 @@ export default function Home() {
     fetchTasks();
   }, []);
 
-  const addTask = (): void => {
-    if (title.trim() === "" || content.trim() === "") return;
-    const newTask: Task = {
-      $id: generateTaskId(),
-      title,
-      content,
-      completed: false,
-    };
-    addTaskToDb(newTask)
-
-    setTasks([...tasks, newTask]);
-    setTitle("");
-    setContent("");
+const addTask = async (): Promise<void> => {
+  if (title.trim() === "" || content.trim() === "") return;
+  const taskId = generateTaskId();
+  const newTask = {
+    $id: taskId,
+    title,
+    content,
+    completed: false,
   };
+  setTasks([...tasks, newTask]);
+
+  try {
+    const result = await addTaskToDb(newTask);
+
+  } catch (error) {
+    console.error(error);
+    setTasks(prev => prev.filter(t => t.$id !== taskId));
+  }
+};
 
   const toggleTaskCompletion = (index: number): void => {
     const updatedTasks = tasks.map((t, i) =>
