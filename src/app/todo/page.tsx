@@ -46,12 +46,17 @@ const addTask = async (): Promise<void> => {
   }
 };
 
-  const toggleTaskCompletion = (index: number): void => {
+  const toggleTaskCompletion = async (index: number): Promise<void> => {
     const updatedTasks = tasks.map((t, i) =>
       i === index ? { ...t, completed: !t.completed } : t
     );
     setTasks(updatedTasks);
-    saveTask(index);
+    try {
+      await updateTaskDb(updatedTasks[index]);
+    } catch (error) {
+      console.error("Failed to update completion:", error);
+      setTasks(tasks);
+    }
   };
 
   const deleteTask = async (index: number): Promise<void> => {
