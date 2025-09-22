@@ -51,6 +51,7 @@ const addTask = async (): Promise<void> => {
       i === index ? { ...t, completed: !t.completed } : t
     );
     setTasks(updatedTasks);
+    saveTask(index);
   };
 
   const deleteTask = async (index: number): Promise<void> => {
