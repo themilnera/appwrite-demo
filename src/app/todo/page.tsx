@@ -19,7 +19,11 @@ export default function Home() {
 
   // Load tasks when the component mounts
   useEffect(() => {
-    loadTasks().then(setTasks);
+    const fetchTasks = async () => {
+      const loaded = await loadTasks();
+      setTasks(loaded);
+    };
+    fetchTasks();
   }, []);
 
   const addTask = (): void => {
