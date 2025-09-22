@@ -38,7 +38,7 @@ const addTask = async (): Promise<void> => {
   setTasks([...tasks, newTask]);
 
   try {
-    const result = await addTaskToDb(newTask);
+    await addTaskToDb(newTask);
 
   } catch (error) {
     console.error(error);
