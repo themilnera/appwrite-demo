@@ -22,11 +22,6 @@ export default function Home() {
     loadTasks().then(setTasks);
   }, []);
 
-  // Save tasks whenever they change
-  // useEffect(() => {
-  //   saveTasks(tasks);
-  // }, [tasks]);
-
   const addTask = (): void => {
     if (title.trim() === "" || content.trim() === "") return;
     const newTask: Task = {
@@ -50,19 +45,18 @@ export default function Home() {
   };
 
   const deleteTask = async (index: number): Promise<void> => {
-    const taskToDelete = tasks[index];
-    console.log(`Attempting to delete task ID: ${taskToDelete.$id}`)
-    if (taskToDelete.$id) {
-      try {
-        await deleteTaskDb(taskToDelete);
-      } catch (error) {
-        console.error("Failed to delete task: "+error);
-        return;
+      const taskToDelete = tasks[index];
+      setTasks(tasks.filter((_, i) => i !== index));
+      if (taskToDelete.$id) {
+        try {
+          await deleteTaskDb(taskToDelete);
+        } catch (error) {
+          console.error("Failed to delete task: "+error);
+          setTasks(prev => [...prev.slice(0, index), taskToDelete, ...prev.slice(index)]);
+        }
       }
-    }
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
   };
+
 
   const saveTask = (index: number): void => {
     const updatedTasks = tasks.map((t, i) => {
